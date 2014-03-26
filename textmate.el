@@ -295,17 +295,17 @@ Symbols matching the text at point are put first in the completion list."
   "Uses your completing read to quickly jump to a file in a project."
   (interactive)
   (let ((root (textmate-project-root)))
-    (when (null root) 
+    (when (null root)
       (error "Can't find any .git directory"))
-    (find-file 
-     (concat 
+    (find-file
+     (concat
       (expand-file-name root) "/"
-      (textmate-completing-read 
+      (textmate-completing-read
        "Find file: "
        (mapcar
-	(lambda (e)
-	  (replace-regexp-in-string (textmate-project-root) "" e))
-	(textmate-cached-project-files (textmate-project-root))))))))
+        (lambda (e)
+          (replace-regexp-in-string root "" e))
+        (textmate-cached-project-files root)))))))
 
 (defun textmate-clear-cache ()
   "Clears the project root and project files cache. Use after adding files."
@@ -356,7 +356,8 @@ Symbols matching the text at point are put first in the completion list."
   "Returns the current project root."
   (when (or
          (null *textmate-project-root*)
-         (not (string-match *textmate-project-root* default-directory)))
+         (not (string-match *textmate-project-root*
+                            (expand-file-name default-directory))))
     (let ((root (textmate-find-project-root)))
       (if root
           (setq *textmate-project-root* (expand-file-name (concat root "/")))
